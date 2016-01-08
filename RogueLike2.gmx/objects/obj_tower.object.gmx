@@ -35,9 +35,9 @@ dra = 9;
 drb = 6;
 drc = 3;
 
-sa = 0.8;
-sb = 1.0;
-sc = 1.2;
+sa = 1.2;
+sb = 1.5;
+sc = 1.8;
 
 zsa = sa;
 zsb = sb;
@@ -56,6 +56,10 @@ osb = random(2*pi);
 osc = random(2*pi);
 
 t = 0;
+
+hurt = -1;
+
+hp = 100;
 </string>
           </argument>
         </arguments>
@@ -78,15 +82,22 @@ t = 0;
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>t++;
-
-ra = (ra + dra) mod 360;
-rb = (rb + drb) mod 360;
-rc = (rc + drc) mod 360;
-
-sa = asa * sin(fsa*t + osa) + zsa;
-sb = asb * sin(fsb*t + osb) + zsb;
-sc = asc * sin(fsc*t + osc) + zsc;
+            <string>if (hurt == -1) {
+    image_blend = c_red;
+    t++;
+    
+    ra = (ra + dra) mod 360;
+    rb = (rb + drb) mod 360;
+    rc = (rc + drc) mod 360;
+    
+    sa = asa * sin(fsa*t + osa) + zsa;
+    sb = asb * sin(fsb*t + osb) + zsb;
+    sc = asc * sin(fsc*t + osc) + zsc;
+}
+else {
+    hurt--;
+    image_blend = c_white;
+}
 </string>
           </argument>
         </arguments>
@@ -109,11 +120,11 @@ sc = asc * sin(fsc*t + osc) + zsc;
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>draw_sprite_ext(spr_tower_spin, 0, x, y, sa, sa, ra, c_red, 0.8);
-draw_sprite_ext(spr_tower_spin, 0, x, y, sb, sb, rb, c_red, 0.8);
-draw_sprite_ext(spr_tower_spin, 0, x, y, sc, sc, rc, c_red, 0.8);
+            <string>draw_sprite_ext(spr_tower_spin, 0, x, y, sa, sa, ra, image_blend, 0.8);
+draw_sprite_ext(spr_tower_spin, 0, x, y, sb, sb, rb, image_blend, 0.8);
+draw_sprite_ext(spr_tower_spin, 0, x, y, sc, sc, rc, image_blend, 0.8);
 
-draw_sprite_ext(spr_tower_circle, 0, x, y, sb, sb, 0, c_red, 0.8);
+draw_sprite_ext(spr_tower_circle, 0, x, y, sb, sb, 0, image_blend, 0.8);
 </string>
           </argument>
         </arguments>

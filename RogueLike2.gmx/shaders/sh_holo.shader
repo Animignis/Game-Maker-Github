@@ -39,6 +39,7 @@ varying vec2 v_vTexcoord;
 varying vec4 v_vColour;
 
 uniform float time;
+//uniform vec2 view;
 
 highp float rand(vec2 co)
 {
@@ -52,12 +53,22 @@ highp float rand(vec2 co)
 
 void main()
 {
+
     float div = 1.0;
     vec2 texCoord = v_vTexcoord;
     //texCoord.x = texCoord.x+cos(texCoord.y+time*0.1)*0.1; 
     //texCoord.y = texCoord.y+sin(texCoord.x+time*0.1)*0.1;
     gl_FragColor = v_vColour * texture2D( gm_BaseTexture, texCoord);
     float rn = rand(vec2(texCoord.x / div, (texCoord.y / div) + time));
+    
+    vec2 pos = v_vTexcoord;
+    //pos += view;
+    float dist = sqrt(pow((pos.x-0.5)*2.0, 2.0) + pow((pos.y-0.5)*2.0, 2.0)) / sqrt(2.0);
+    dist = 1.0 - dist;    
+    dist = pow(dist * 3.0, 3.0) / 27.0;
+    dist = clamp(dist, 0.0, 1.0);
+    
     gl_FragColor.g *= rn;
+    gl_FragColor.r = dist;
 }
 

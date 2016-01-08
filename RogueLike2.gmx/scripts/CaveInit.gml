@@ -71,9 +71,6 @@ for (var r = 1; r < h - 1; r++) {
     for (var c = 1; c < w - 1; c++) {
         if (ds_grid_get(pgrid, c, r) == -1) {
             var count = CaveDeCheese(r, c);
-            if (count != 0) {
-                log(string(count));
-            }
             if (count > cheeseThresh) {
                 for (var i = 0; i < ds_list_size(fill); i += 2) {
                     var cc = ds_list_find_value(fill, i);
@@ -102,6 +99,7 @@ ds_grid_destroy(pgrid);
     6 = up edge wall
     7 = left edge wall
     8 = down edge wall
+    9 = tower
 */
 surface_set_target(surf);
 draw_clear(c_purple);

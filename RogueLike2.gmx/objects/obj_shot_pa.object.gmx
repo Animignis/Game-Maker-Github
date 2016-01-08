@@ -48,9 +48,16 @@
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>part_type_direction(pt_die,image_angle-25,image_angle + 25,0,0);
-part_particles_create(ps,x,y,pt_die,20);
-repeat (2)
+            <string>
+if (!hit) {
+    part_type_direction(obj_partman.pt_die_bullet,image_angle-25+180,image_angle+25+180,0,0);
+}
+else {
+    part_type_direction(obj_partman.pt_die_bullet,image_angle-25,image_angle+25,0,0);    
+}
+
+part_particles_create(ps,x,y,obj_partman.pt_die_bullet,30);
+repeat (4)
 {
 var ran;
 ran=random(360);
@@ -60,7 +67,7 @@ part_particles_create(ps,
 x+lengthdir_x(random(8),ran),
 y+lengthdir_y(random(8),ran),
 
-pt_explode,1);
+obj_partman.pt_explode_bullet,1);
 }
 </string>
           </argument>
@@ -84,9 +91,22 @@ pt_explode,1);
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>if (CheckTile(
+            <string>var t = CheckTile(
         x + lengthdir_x(speed, direction),
-        y + lengthdir_y(speed, direction))) {
+        y + lengthdir_y(speed, direction));
+
+if (GetTile(x + lengthdir_x(speed, direction),
+        y + lengthdir_y(speed, direction)) == 9) {
+    t = false;        
+}
+
+if (t) {
+    if (object_index == obj_bullet) {
+        trail.speed = 0;
+        trail.fade = true;
+        log(string(trail.speed));
+        
+    }
     instance_destroy();
 }
 </string>

@@ -74,15 +74,15 @@ var n = floor(random_range(minNum, maxNum));
 repeat (n) {
     var xx = argument0 - 5;
     var yy = argument1 - 5;
-    var scale = random_range(0.7, 1.5);
+    var scale = random_range(0.8, 2.0);
     var dir = random(360);
-    var spd = random_range(14, 18);
+    var spd = random_range(14, 22);
     var f = random_range(spd / 8, spd / 2);
     var sizeChange = random_range(scale / 10, scale / 3);
     var alpha = 1;
     var color = make_color_hsv(argument2,
-        (random(1) * 0.15 + 0.85) * 255,
-        (random(1) * 0.15 + 0.85) * 255);
+        (random(1) * 0.2 + 0.8) * 255,
+        (random(1) * 0.6 + 0.4) * 255);
     ds_list_add(splats, xx, yy, scale, dir, spd, f, sizeChange, alpha, color);
 }
 

@@ -17,8 +17,11 @@ var dir, prx, pry;
 var oldDepth = depth;
 depth = 0;
 draw_primitive_begin(pr_trianglefan);
-var vx = view_xview - CELL_SIZE;
-var vy = view_yview - CELL_SIZE;
+var ss = SURF_SIZE/2;
+var offw = ss - view_wview/2;
+var offh = ss - view_hview/2;
+var vx = view_xview - offw;
+var vy = view_yview - offh;
 draw_vertex(obj_player.x - vx, obj_player.y - vy);
 dir = point_direction(
         obj_player.x, obj_player.y, fx1, fy1);

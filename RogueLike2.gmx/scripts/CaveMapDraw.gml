@@ -61,7 +61,6 @@ with(obj_tower) {
 }
 
 for (var i = 0; i < ds_list_size(xy); i += 2) {
-    log(string(xy[| i]) + ", " + string(xy[| i + 1]));
     draw_circle(xy[| i], xy[| i+1], 2, false);
 }
 ds_list_destroy(xy);

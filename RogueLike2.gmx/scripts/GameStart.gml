@@ -3,4 +3,6 @@ time = 0;
 
 window_set_cursor(cr_none);
 
-AspectFix();
+//if (window_get_fullscreen()) {
+    AspectFix();
+//}

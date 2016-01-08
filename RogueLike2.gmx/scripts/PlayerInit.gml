@@ -16,4 +16,4 @@ row = floor(y / CELL_SIZE);
 pc = -1;
 pr = -1;
 
-PlayerInitParticles();
+pt_flash=obj_partman.pt_flash;

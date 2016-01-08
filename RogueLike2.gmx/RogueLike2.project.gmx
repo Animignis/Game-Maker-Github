@@ -57,8 +57,17 @@
       <script>scripts\IsInDrain.gml</script>
       <script>scripts\IsABlock.gml</script>
       <script>scripts\CaveDeCheese.gml</script>
+      <script>scripts\CaveClean.gml</script>
       <script>scripts\CaveMapDraw.gml</script>
-      <script>scripts\DrawCaveLight.gml</script>
+      <scripts name="Light">
+        <script>scripts\LineSegmentsIntersect.gml</script>
+        <script>scripts\SetLightProjections.gml</script>
+        <script>scripts\GetLightEdges.gml</script>
+        <script>scripts\AddLightEdge.gml</script>
+        <script>scripts\AddLightEdgeVal.gml</script>
+        <script>scripts\SetPrevNextEdges.gml</script>
+        <script>scripts\DrawCaveLight.gml</script>
+      </scripts>
     </scripts>
     <scripts name="Utility">
       <script>scripts\log.gml</script>
@@ -66,15 +75,15 @@
       <script>scripts\ViewControl.gml</script>
       <script>scripts\CheckTile.gml</script>
       <script>scripts\CheckTileCR.gml</script>
+      <script>scripts\GetTile.gml</script>
     </scripts>
     <scripts name="Player">
       <scripts name="Init">
         <script>scripts\PlayerInit.gml</script>
         <script>scripts\PlayerInitWeapons.gml</script>
         <script>scripts\PlayerInitTimers.gml</script>
-        <script>scripts\PlayerInitParticles.gml</script>
       </scripts>
-      <scripts name="Control_Step">
+      <scripts name="Control">
         <script>scripts\PlayerControl.gml</script>
         <script>scripts\PlayerAttack.gml</script>
         <script>scripts\PlayerTimers.gml</script>
@@ -90,6 +99,8 @@
       </scripts>
     </scripts>
     <scripts name="Graphics">
+      <script>scripts\ParticlesInit.gml</script>
+      <script>scripts\ParticlesDestroy.gml</script>
       <script>scripts\ShaderHoloSet.gml</script>
       <script>scripts\Splats.gml</script>
       <scripts name="Trail">
@@ -98,16 +109,24 @@
         <script>scripts\TrailDraw.gml</script>
       </scripts>
     </scripts>
-    <scripts name="Light">
-      <script>scripts\LineSegmentsIntersect.gml</script>
-      <script>scripts\SetLightProjections.gml</script>
-      <script>scripts\GetLightEdges.gml</script>
-      <script>scripts\AddLightEdge.gml</script>
-      <script>scripts\AddLightEdgeVal.gml</script>
-      <script>scripts\SetPrevNextEdges.gml</script>
-    </scripts>
     <scripts name="Enemies">
-      <script>scripts\Enemy.gml</script>
+      <scripts name="Init">
+        <script>scripts\EnemyInit.gml</script>
+      </scripts>
+      <scripts name="Events">
+        <script>scripts\EnemyOnHit.gml</script>
+        <script>scripts\EnemyDestroy.gml</script>
+        <script>scripts\EnemyDraw.gml</script>
+      </scripts>
+      <scripts name="Control">
+        <script>scripts\EnemyControl.gml</script>
+        <script>scripts\EnemyCollisionCorrect.gml</script>
+        <script>scripts\EnemyWandering.gml</script>
+        <script>scripts\EnemyChasing.gml</script>
+        <script>scripts\EnemyAttacking.gml</script>
+        <script>scripts\EnemyHurting.gml</script>
+      </scripts>
+      <script>scripts\TowerOnHit.gml</script>
     </scripts>
   </scripts>
   <shaders name="shaders">
@@ -115,11 +134,13 @@
     <shader type="GLSLES">shaders\ShaderHoloWhite.shader</shader>
     <shader type="GLSLES">shaders\sh_holo.shader</shader>
     <shader type="GLSLES">shaders\sh_holo_white.shader</shader>
+    <shader type="GLSLES">shaders\sh_waves.shader</shader>
   </shaders>
   <fonts name="fonts">
     <font>fonts\fnt_main</font>
   </fonts>
   <objects name="objects">
+    <object>objects\obj_partman</object>
     <object>objects\obj_game</object>
     <object>objects\obj_cave</object>
     <object>objects\obj_player</object>
@@ -128,6 +149,7 @@
     <object>objects\obj_shader_reset</object>
     <object>objects\obj_shot_pa</object>
     <object>objects\obj_bullet</object>
+    <object>objects\obj_trail</object>
     <object>objects\obj_tower</object>
     <object>objects\obj_orb</object>
     <object>objects\obj_splatters</object>

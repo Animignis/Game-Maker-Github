@@ -1,3 +1,4 @@
+/// TrailInit(length, radius, color, startAlpha, decRad, decAlpha, x, y)
 len = argument0;
 radius = argument1;
 c = argument2;

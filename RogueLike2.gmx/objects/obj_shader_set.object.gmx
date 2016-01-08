@@ -36,7 +36,7 @@ wobTimerMin = room_speed * 0.5;
 wobTimerMax = room_speed * 1.5;
 wobTimer = -1;
 
-surf = surface_create(2048, 2048);
+surf = surface_create(SURF_SIZE, SURF_SIZE);
 </string>
           </argument>
         </arguments>
@@ -84,7 +84,7 @@ else {
 */
 
 if (!surface_exists(surf)) {
-    surf = surface_create(1024, 1024);
+    surf = surface_create(SURF_SIZE, SURF_SIZE);
 }
 if (surface_exists(surf)) {
     surface_set_target(surf);
@@ -121,7 +121,11 @@ if (surface_exists(surf)) {
             <kind>1</kind>
             <string>ShaderHoloSet();
 if (surface_exists(surf)) {
-    draw_surface(surf, view_xview - CELL_SIZE, view_yview - CELL_SIZE);
+    var ss = SURF_SIZE/2;
+    
+    var offw = ss - view_wview/2;
+    var offh = ss - view_hview/2;
+    draw_surface(surf, view_xview - offw, view_yview - offh);
 }
 </string>
           </argument>

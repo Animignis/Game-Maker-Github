@@ -13,9 +13,11 @@ adjustDirMin = 20;
 adjustDirTempCap = 0;
 adjustDir = 0;
 adjustDirSign = 1;
+
 deltaDir = 0;
 deltaDirMin = 3;
 deltaDirMax = 8;
+
 followRange = 300;
 sightAngle = 60;
 targetLock = 0;
