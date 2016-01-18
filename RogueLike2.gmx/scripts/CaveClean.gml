@@ -10,3 +10,6 @@ if (ds_exists(egp, ds_type_priority)) {
 if (surface_exists(surf)) {
     surface_free(surf);
 }
+if (ds_exists(empty, ds_type_list)) {
+    ds_list_destroy(empty);
+}

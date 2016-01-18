@@ -28,7 +28,7 @@
             <string>/// len, radius, c, startAlpha, decRad, decAlpha, xx, yy
 TrailInit(1, 1, c_white, 1, false, false, x, y);
 fade = false;
-faceCount = 0;
+fadeCount = 0;
 </string>
           </argument>
         </arguments>

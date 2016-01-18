@@ -80,7 +80,7 @@
     <option_freeze>false</option_freeze>
     <option_frequency>0</option_frequency>
     <option_frontimage>nil</option_frontimage>
-    <option_fullscreen>False</option_fullscreen>
+    <option_fullscreen>True</option_fullscreen>
     <option_gameguid>{9B68DF36-594A-4D18-B5E9-C5FA2E3AA6AE}</option_gameguid>
     <option_gameid>871290793</option_gameid>
     <option_haptic_effects>0</option_haptic_effects>
@@ -457,12 +457,14 @@
     <option_xbone_title_id></option_xbone_title_id>
   </Options>
   <ConfigConstants>
-    <constants number="5">
+    <constants number="7">
       <constant name="SURF_SIZE">2048</constant>
       <constant name="wpn_pistol">0</constant>
       <constant name="MAX_ROOM_SIZE">8</constant>
       <constant name="MIN_ROOM_SIZE">4</constant>
       <constant name="CELL_SIZE">48</constant>
+      <constant name="SHOW_HITBOXES">true</constant>
+      <constant name="pt_chomp_blur">obj_partman.chomp_blur</constant>
     </constants>
   </ConfigConstants>
 </Config>

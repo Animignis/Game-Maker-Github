@@ -25,27 +25,82 @@
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>timeTimerCap = 4;
-timeTimer = timeTimerCap;
-AspectFix();
-ViewControlInit();
-
-ctrlObjs = ds_list_create();
-ds_list_add(ctrlObjs, obj_cave);
-ds_list_add(ctrlObjs, obj_shader_set);
-ds_list_add(ctrlObjs, obj_shader_reset);
-ds_list_add(ctrlObjs, obj_splatters);
-ds_list_add(ctrlObjs, obj_shot_pa);
-ds_list_add(ctrlObjs, obj_trail);
-ds_list_add(ctrlObjs, obj_player);
-ds_list_add(ctrlObjs, obj_tower);
-ds_list_add(ctrlObjs, obj_shake);
-ds_list_add(ctrlObjs, obj_partman);
-
-TrailInit(30, 8, c_red, 0.5, true, true, mouse_x, mouse_y);
+            <string>GameCreate();
 </string>
           </argument>
         </arguments>
+      </action>
+    </event>
+    <event eventtype="2" enumb="1">
+      <action>
+        <libid>1</libid>
+        <id>605</id>
+        <kind>0</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>0</useapplyto>
+        <exetype>0</exetype>
+        <functionname></functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>1</kind>
+            <string>Towers Gone</string>
+          </argument>
+        </arguments>
+      </action>
+      <action>
+        <libid>1</libid>
+        <id>331</id>
+        <kind>0</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>0</useapplyto>
+        <exetype>1</exetype>
+        <functionname>action_restart_game</functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+      </action>
+    </event>
+    <event eventtype="2" enumb="0">
+      <action>
+        <libid>1</libid>
+        <id>605</id>
+        <kind>0</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>0</useapplyto>
+        <exetype>0</exetype>
+        <functionname></functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>1</kind>
+            <string>Player Death</string>
+          </argument>
+        </arguments>
+      </action>
+      <action>
+        <libid>1</libid>
+        <id>331</id>
+        <kind>0</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>0</useapplyto>
+        <exetype>1</exetype>
+        <functionname>action_restart_game</functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
       </action>
     </event>
     <event eventtype="3" enumb="0">
@@ -65,23 +120,7 @@ TrailInit(30, 8, c_red, 0.5, true, true, mouse_x, mouse_y);
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>TrailStep(mouse_x, mouse_y);
-
-ViewControl();
-
-var b = 64;
-instance_activate_all();
-instance_deactivate_region(
-    view_xview - b,
-    view_yview - b,
-    view_wview + 2 * b,
-    view_hview + 2 * b,
-    false, true);
-for (var i = 0; i &lt; ds_list_size(ctrlObjs); i++) {
-    instance_activate_object(ds_list_find_value(ctrlObjs, i));
-}
-
-time += 1;
+            <string>GameStep();
 </string>
           </argument>
         </arguments>
@@ -127,31 +166,7 @@ time += 1;
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>
-draw_set_color(c_red);
-draw_set_font(fnt_main);
-draw_text(0, 0, "FPS: " +string(fps));
-draw_text(0, 64, string(mouse_x) + ", " + string(mouse_y));
-draw_text(0, 128, string(obj_player.x) + ", " + string(obj_player.y));
-/*
-var c = floor(mouse_x / CELL_SIZE);
-var r = floor(mouse_y / CELL_SIZE);
-if (c &lt; 0 || c &gt;= obj_cave.w) {
-    c = -1;
-}
-if (r &lt; 0 || r &gt;= obj_cave.h) {
-    r = -1;
-}
-var val = -1;
-if (!(c == -1 || r == -1)) {
-    val = ds_grid_get(obj_cave.grid, c, r);
-}
-draw_text(0, 64, "Time: " + string(floor(time / 60)));
-draw_text(0, 128, "col: " + string(c));
-draw_text(0, 192, "row: " + string(r));
-draw_text(0, 256, "val: " + string(val));
-*/
-draw_set_color(c_white);
+            <string>GameDrawGUI();
 </string>
           </argument>
         </arguments>
@@ -174,9 +189,7 @@ draw_set_color(c_white);
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>TrailDraw();
-draw_sprite_ext(spr_cursor, 0, mouse_x, mouse_y,
-     0.5, 0.5, 0, c_white, 1);
+            <string>GameDraw();
 </string>
           </argument>
         </arguments>

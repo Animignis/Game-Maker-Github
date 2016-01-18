@@ -12,8 +12,8 @@ if (y2 >= h) { y2 = h - 1; }
 var xx;
 var yy;
 
-var px = obj_player.x;
-var py = obj_player.y;
+var px = playerX;
+var py = playerY;
 var pc = floor(px / cs);
 var pr = floor(py / cs);
 

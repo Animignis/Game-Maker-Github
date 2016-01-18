@@ -1,5 +1,5 @@
-var px = obj_player.x;
-var py = obj_player.y;
+var px = playerX;
+var py = playerY;
 //projection line length
 var len = view_wview;
 //list of line projections

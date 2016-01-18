@@ -91,9 +91,7 @@ if (surface_exists(surf)) {
     draw_set_blend_mode(bm_normal);
     draw_clear(make_color_rgb(0, 255, 255));
     draw_set_blend_mode(bm_subtract);
-    if (instance_exists(obj_player)) {
-        with(obj_cave) { DrawCaveLight(); }
-    }
+    with(obj_cave) { DrawCaveLight(); }
     draw_set_blend_mode(bm_normal);
     surface_reset_target();
 }

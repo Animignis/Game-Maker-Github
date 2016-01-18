@@ -8,8 +8,8 @@ ds_list_add(eg,
     x2, y2,
     -1, -1);
 var cs = CELL_SIZE;
-var px = obj_player.x;
-var py = obj_player.y;
+var px = playerX;
+var py = playerY;
 ds_priority_add(egp, val,
     point_distance(px, py, 
         (x1 + x2) / 2,

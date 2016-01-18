@@ -104,8 +104,9 @@ if (t) {
     if (object_index == obj_bullet) {
         trail.speed = 0;
         trail.fade = true;
-        log(string(trail.speed));
-        
+    }
+    with(obj_shader_set) {
+        wobTimer = 3;
     }
     instance_destroy();
 }

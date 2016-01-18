@@ -1,5 +1,7 @@
 PlayerTimers();
 
+health = hp;
+
 //aim
 image_angle = point_direction(x, y, mouse_x, mouse_y);
 
@@ -23,6 +25,12 @@ if (mouse_check_button(mb_left)) {
     }
 }
 
-if (mouse_check_button(mb_right)) {
-    instance_create(mouse_x, mouse_y, obj_enemy);
+if (canSpawn >= 0) {
+    canSpawn--;
 }
+if (mouse_check_button(mb_right) && canSpawn == -1) {
+    instance_create(mouse_x, mouse_y, obj_shock);
+    canSpawn += 5;
+}
+
+

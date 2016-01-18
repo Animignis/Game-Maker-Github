@@ -26,9 +26,12 @@
           <argument>
             <kind>1</kind>
             <string>off = 0;
-max_amp = 3;
-min_amp = 0;
+amp = 6;
 shake = -1;
+shakeX = 0;
+shakeY = 0;
+vx = view_xview;
+vy = view_yview;
 </string>
           </argument>
         </arguments>
@@ -53,13 +56,20 @@ shake = -1;
             <kind>1</kind>
             <string>if (shake &gt;= 0) {
     shake--;
-    view_angle = 
-        choose(
-            random_range(-min_amp, -max_amp),
-            random_range(min_amp, max_amp));
+    shakeX = random_range(-1 * amp, amp);
+    shakeY = random_range(-1 * amp, amp);
     if (shake == -1) {
-        view_angle = 0;
+        shakeX = 0;
+        shakeY = 0;
     }
+    if (!instance_exists(obj_player)) {
+        view_xview = vx + shakeX;
+        view_yview = vy + shakeY;
+    }
+}
+else {
+    vx = view_xview;
+    vy = view_yview;
 }
 </string>
           </argument>

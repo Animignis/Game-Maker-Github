@@ -33,15 +33,15 @@ draw_set_color(c_white);
 draw_self();
 
 draw_set_alpha(0.75);
-var mincol = make_color_rgb(0, 0, 100);
-var maxcol = c_aqua;
+var mincol = make_color_rgb(0, 80, 0);
+var maxcol = c_lime;
 draw_healthbar(
     view_xview + 4, view_yview + view_hview * 0.25,
     view_xview + 24, view_yview+ view_hview * 0.75,
-    health, c_black, 
-    mincol, maxcol, 3, false, true);
+    health, c_gray, 
+    mincol, maxcol, 3, true, true);
 
-draw_set_color(c_white);
+draw_set_color(c_black);
 draw_rectangle(
     view_xview + 4, view_yview + view_hview * 0.25,
     view_xview + 24, view_yview+ view_hview * 0.75,

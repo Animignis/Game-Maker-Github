@@ -8,8 +8,6 @@ if (nbs >= 2) {
             && IsABlock(c, r - 1)
             && ds_grid_get(grid, c, r + 1) == -1
             && ds_grid_get(grid, c + 1, r) == -1) {
-        //var block = instance_create(c * CELL_SIZE, r * CELL_SIZE, obj_block);
-        //block.image_index = 1;
         ds_grid_set(grid, c, r, 1);
         //tile_add(tileSet, 40, 2, 32, 32, c * CELL_SIZE, r * CELL_SIZE, 1000);
         return true;
@@ -19,8 +17,6 @@ if (nbs >= 2) {
             && IsABlock(c, r + 1)
             && ds_grid_get(grid, c, r - 1) == -1
             && ds_grid_get(grid, c + 1, r) == -1) {
-        //var block = instance_create(c * CELL_SIZE, r * CELL_SIZE, obj_block);
-        //block.image_index = 2;
         ds_grid_set(grid, c, r, 2);
         //tile_add(tileSet, 78, 2, 32, 32, c * CELL_SIZE, r * CELL_SIZE, 1000);
         return true;
@@ -30,8 +26,6 @@ if (nbs >= 2) {
             && IsABlock(c, r + 1)
             && ds_grid_get(grid, c, r - 1) == -1
             && ds_grid_get(grid, c - 1, r) == -1) {
-        //var block = instance_create(c * CELL_SIZE, r * CELL_SIZE, obj_block);
-        //block.image_index = 3;
         ds_grid_set(grid, c, r, 3);
         //tile_add(tileSet, 116, 2, 32, 32, c * CELL_SIZE, r * CELL_SIZE, 1000);
         return true;
@@ -41,8 +35,6 @@ if (nbs >= 2) {
             && IsABlock(c, r - 1)
             && ds_grid_get(grid, c, r + 1) == -1
             && ds_grid_get(grid, c - 1, r) == -1) {
-        //var block = instance_create(c * CELL_SIZE, r * CELL_SIZE, obj_block);
-        //block.image_index = 4;
         ds_grid_set(grid, c, r, 4);
         //tile_add(tileSet, 152, 2, 32, 32, c * CELL_SIZE, r * CELL_SIZE, 1000);
         return true;

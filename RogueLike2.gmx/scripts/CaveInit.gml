@@ -12,6 +12,9 @@ surf = surface_create(dim, dim);
 
 cheeseThresh = floor(w * h / 6);
 
+playerX = 0;
+playerY = 0;
+
 empty = ds_list_create(); // { c0, r0, c1, r1, c2, r2 ... }
 
 //light edges
@@ -142,24 +145,13 @@ for (var r = 0; r < h; r++) {
     }
 }
 
-var rand = floor(random(ds_list_size(empty) / 2)) * 2;
-var c = empty[| rand];
-var r = empty[| rand+1];
-log("PLAYER: " + string(c) + ", " + string(r));
 var halfCS = CELL_SIZE * 0.5;
-instance_create(
-    c * CELL_SIZE + halfCS,
-    r * CELL_SIZE + halfCS,
-    obj_player);
-instance_create(
-    c * CELL_SIZE + halfCS,
-    r * CELL_SIZE + halfCS,
-    obj_enemy);
-
 var towerDistI = CELL_SIZE*200;
 var towerDist = towerDistI;
 var nt = 0;
-repeat(10) {
+var numTowers = floor(w * h / 3000);
+log("Number of Towers: " + string(numTowers));
+repeat(numTowers) {
     var fin = false;
     var xx = -1;
     var yy = -1;
@@ -190,7 +182,16 @@ repeat(10) {
     nt++;
     towerDist = towerDistI;
 }
-ds_list_destroy(empty);
+
+var rand = floor(random(ds_list_size(empty) / 2)) * 2;
+var c = empty[| rand];
+var r = empty[| rand+1];
+log("PLAYER: " + string(c) + ", " + string(r));
+instance_create(
+    c * CELL_SIZE + halfCS,
+    r * CELL_SIZE + halfCS,
+    obj_player);
+//instance_create(c * CELL_SIZE + halfCS, r * CELL_SIZE + halfCS, obj_chomp);
 
 log("cave done");
 draw_set_color(c_white);
