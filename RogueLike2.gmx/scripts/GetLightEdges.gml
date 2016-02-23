@@ -71,7 +71,7 @@ for (var r = y1; r < y2; r++) {
             break;
             
             case 2:
-            if (py < (yy - xx) + px) {
+            if (py < (yy - xx + px)) {
                 AddLightEdgeVal(val, xx, yy)
             }
             if (c == x2 - 1) {

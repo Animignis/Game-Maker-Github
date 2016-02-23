@@ -457,7 +457,7 @@
     <option_xbone_title_id></option_xbone_title_id>
   </Options>
   <ConfigConstants>
-    <constants number="7">
+    <constants number="10">
       <constant name="SURF_SIZE">2048</constant>
       <constant name="wpn_pistol">0</constant>
       <constant name="MAX_ROOM_SIZE">8</constant>
@@ -465,6 +465,9 @@
       <constant name="CELL_SIZE">48</constant>
       <constant name="SHOW_HITBOXES">true</constant>
       <constant name="pt_chomp_blur">obj_partman.chomp_blur</constant>
+      <constant name="P_NEUTRAL">0</constant>
+      <constant name="P_INTANGIBLE">1</constant>
+      <constant name="P_INVINCIBLE">2</constant>
     </constants>
   </ConfigConstants>
 </Config>

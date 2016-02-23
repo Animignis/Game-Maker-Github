@@ -43,6 +43,7 @@
         <sprite>sprites\sprite25</sprite>
       </sprites>
     </sprites>
+    <sprite>sprites\sprite31</sprite>
   </sprites>
   <backgrounds name="background">
     <background>background\bk_grid</background>
@@ -73,7 +74,6 @@
       <script>scripts\SetSlantZero.gml</script>
       <script>scripts\SetEdge.gml</script>
       <script>scripts\ElimSlantZero.gml</script>
-      <script>scripts\IsInDrain.gml</script>
       <script>scripts\IsABlock.gml</script>
       <script>scripts\CaveDeCheese.gml</script>
       <script>scripts\CaveGlobalSpawn.gml</script>
@@ -107,12 +107,14 @@
         <script>scripts\PlayerInitTimers.gml</script>
       </scripts>
       <scripts name="Control">
-        <script>scripts\PlayerControl.gml</script>
-        <script>scripts\PlayerAttack.gml</script>
         <script>scripts\PlayerTimers.gml</script>
+        <script>scripts\PlayerViewAdjust.gml</script>
+        <script>scripts\PlayerControl.gml</script>
+        <script>scripts\PlayerNeutral.gml</script>
+        <script>scripts\PlayerAttack.gml</script>
         <script>scripts\PlayerMove.gml</script>
         <script>scripts\PlayerDesktopMove.gml</script>
-        <script>scripts\PlayerViewAdjust.gml</script>
+        <script>scripts\PlayerCollisionCheck.gml</script>
         <script>scripts\PlayerDestroy.gml</script>
       </scripts>
       <scripts name="Draw">

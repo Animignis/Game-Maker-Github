@@ -66,7 +66,6 @@ for (var c = 0; c < w; c++) {
 }
 
 //de-cheese
-drain = ds_list_create();
 fill = ds_list_create();
 pgrid = ds_grid_create(w, h);
 ds_grid_copy(pgrid, grid);
@@ -86,7 +85,6 @@ for (var r = 1; r < h - 1; r++) {
     }
 }
 
-ds_list_destroy(drain);
 ds_list_destroy(fill);
 ds_grid_destroy(pgrid);
 

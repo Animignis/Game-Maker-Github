@@ -22,3 +22,7 @@ pc = -1;
 pr = -1;
 
 pt_flash=obj_partman.pt_flash;
+
+canControl = true;
+
+state = P_NEUTRAL;

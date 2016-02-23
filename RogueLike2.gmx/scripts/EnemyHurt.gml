@@ -1,7 +1,6 @@
-if (hurtTimer > 0) {
+if (hurtTimer >= 0) {
     hurtTimer -= 1;
-}
-else {
-    state = prevDifState;
-    hurtTimer = -1;
+    if (hurtTimer == -1) {
+        state = prevDifState;
+    }
 }

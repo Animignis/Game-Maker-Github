@@ -11,7 +11,6 @@ while(!ds_queue_empty(q)) {
     r = ds_queue_dequeue(q);
     if (ds_grid_get(pgrid, c, r) == -1) {
         i += 1;
-        var node;
         ds_list_add(fill, c);
         ds_list_add(fill, r);
         ds_grid_set(grid, c, r, 0);
@@ -25,24 +24,3 @@ while(!ds_queue_empty(q)) {
 }
 ds_queue_destroy(q);
 return i;
-/*
-if (ds_grid_get(grid, c, r) == -1) {
-    ds_grid_set(grid, c, r, 0);
-    
-    var i = 1;
-    i += CaveDeCheese(r, c + 1);
-    i += CaveDeCheese(r, c - 1);
-    i += CaveDeCheese(r + 1, c);
-    i += CaveDeCheese(r - 1, c);
-    
-    var cr;
-    cr[0] = c;
-    cr[1] = r;
-    ds_list_add(fill, cr);
-    
-    return i;
-}
-else {
-    return 0;
-}
-*/
