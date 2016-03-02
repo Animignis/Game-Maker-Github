@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 using Assets.Scripts;
 
@@ -50,8 +51,6 @@ public class Cave : MonoBehaviour {
         slantNW = (Sprite)Resources.Load("Backgrounds/SlantNW", typeof(Sprite));
         slantSW = (Sprite)Resources.Load("Backgrounds/SlantSW", typeof(Sprite));
         slantSE = (Sprite)Resources.Load("Backgrounds/SlantSE", typeof(Sprite));
-
-        Debug.Log(tilePrefab);
 
         fillRatio = Random.Range(0.44f, 0.48f);
         cheeseThresh = (int) Mathf.Floor(CAVE_WIDTH * CAVE_HEIGHT / 6.0f);
@@ -129,23 +128,40 @@ public class Cave : MonoBehaviour {
 
                 if (grid[c, r] != Cell.Empty)
                 {
+                    GameObject go = (GameObject)Instantiate(tilePrefab, new Vector3(c * CELL_SIZE, -r * CELL_SIZE, 10), Quaternion.identity);
+
+                    List<Vector2> path = new List<Vector2>();
+                    path.AddRange(go.GetComponent<PolygonCollider2D>().GetPath(0));
+
                     switch (grid[c, r])
                     {
                         case Cell.SlantNE:
                             spr = slantNE;
+                            path.RemoveAt(3);
                             break;
                         case Cell.SlantNW:
                             spr = slantNW;
+                            path.RemoveAt(0);
                             break;
                         case Cell.SlantSE:
                             spr = slantSE;
+                            path.RemoveAt(2);
                             break;
                         case Cell.SlantSW:
                             spr = slantSW;
+                            path.RemoveAt(1);
                             break;
                     }
-                    GameObject go = (GameObject)Instantiate(tilePrefab, new Vector3(c * CELL_SIZE, -r * CELL_SIZE, 10), Quaternion.identity);
+
+                    Vector2[] arr = new Vector2[path.Count];
+                    for (int i = 0; i < path.Count; i++)
+                    {
+                        arr[i] = new Vector2(path[i].x, path[i].y);
+                    }
+                    go.GetComponent<PolygonCollider2D>().SetPath(0, arr);
+
                     go.GetComponent<SpriteRenderer>().sprite = spr;
+
                     go.transform.localScale = new Vector3(CELL_SIZE, CELL_SIZE, CELL_SIZE);
                 }
             }
