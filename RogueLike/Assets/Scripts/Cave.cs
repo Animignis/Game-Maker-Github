@@ -99,6 +99,20 @@ public class Cave : MonoBehaviour {
         // Find/Set Slants/Edges
         FindSlants();
         FindEdges();
+
+        /*
+        for (int r = 0; r < CAVE_HEIGHT; r++)
+        {
+            for (int c = 0; c < CAVE_WIDTH; c++)
+            {
+                if (grid[c, r] == Cell.Filled)
+                {
+                    grid[c, r] = Cell.Empty;
+                }
+            }
+        }
+        */
+
         Debug.Log("Cave Done");
         
         setTextureTest();
@@ -115,15 +129,21 @@ public class Cave : MonoBehaviour {
                 Sprite spr = (Sprite) Resources.Load("Backgrounds/Filled", typeof(Sprite));
                 if (grid[c, r] == Cell.Empty)
                 {
-                    textureTest.SetPixel(c, r, Color.white);
+                    textureTest.SetPixel(c, CAVE_HEIGHT - r, new Color(1, 1, 1, 0.5f));
                 }
                 else if (grid[c, r] == Cell.Filled)
                 {
-                    textureTest.SetPixel(c, r, Color.blue);
+                    textureTest.SetPixel(c, CAVE_HEIGHT - r, new Color(0, 0, 1, 0.5f));
                 }
                 else
                 {
-                    textureTest.SetPixel(c, r, Color.green);
+                    switch (grid[c, r])
+                    {
+                        default:
+                            textureTest.SetPixel(c, CAVE_HEIGHT - r, new Color(0, 1, 0, 1));
+                            break;
+                    }
+                    
                 }
 
                 if (grid[c, r] != Cell.Empty)
@@ -132,7 +152,7 @@ public class Cave : MonoBehaviour {
 
                     List<Vector2> path = new List<Vector2>();
                     path.AddRange(go.GetComponent<PolygonCollider2D>().GetPath(0));
-
+                    Color col = Color.white;
                     switch (grid[c, r])
                     {
                         case Cell.SlantNE:
@@ -161,6 +181,7 @@ public class Cave : MonoBehaviour {
                     go.GetComponent<PolygonCollider2D>().SetPath(0, arr);
 
                     go.GetComponent<SpriteRenderer>().sprite = spr;
+                    go.GetComponent<SpriteRenderer>().color = col;
 
                     go.transform.localScale = new Vector3(CELL_SIZE, CELL_SIZE, CELL_SIZE);
                 }
@@ -177,8 +198,12 @@ public class Cave : MonoBehaviour {
 
     void OnGUI()
     {
+
+        GameObject player = GameObject.Find("Player");
+        textureTest.SetPixel(Mathf.FloorToInt(player.transform.position.x), Mathf.FloorToInt(player.transform.position.y), Color.cyan);
+        textureTest.Apply();
         GUI.skin.box.normal.background = textureTest;
-        GUI.Box(new Rect(0, 0, CAVE_WIDTH, CAVE_HEIGHT), GUIContent.none);
+        GUI.Box(new Rect(32, 32, CAVE_WIDTH * 2, CAVE_HEIGHT * 2), GUIContent.none);
     }
 
     public Cell Get(int c, int r)
@@ -403,12 +428,12 @@ public class Cave : MonoBehaviour {
         }
         if (r > 0 && grid[c, r - 1] == Cell.Empty)
         {
-            grid[c, r] = Cell.EdgeW;
+            grid[c, r] = Cell.EdgeN;
             return true;
         }
         if (c > 0 && grid[c - 1, r] == Cell.Empty)
         {
-            grid[c, r] = Cell.EdgeN;
+            grid[c, r] = Cell.EdgeW;
             return true;
         }
         if (r < CAVE_HEIGHT - 1 && grid[c, r + 1] == Cell.Empty)

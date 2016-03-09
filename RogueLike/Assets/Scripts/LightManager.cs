@@ -7,9 +7,65 @@ using UnityEngine;
 
 namespace Assets.Scripts
 {
-    public class LightManager
+    public class LightManager : MonoBehaviour
     {
         private const float CELL_SIZE = Cave.CELL_SIZE;
+        private Texture2D lightTexture;
+        private Texture2D clearLightTexture;
+        private Color32[] clearPixels;
+
+        public Camera camera;
+        public GameObject player;
+
+        public bool active = true;
+
+        void Start()
+        {
+            player = GameObject.Find("Player");
+            camera = GameObject.Find("MainCamera").GetComponent<Camera>();
+            lightTexture = new Texture2D(camera.pixelWidth, camera.pixelHeight);
+            clearLightTexture = new Texture2D(camera.pixelWidth, camera.pixelHeight);
+
+            Debug.Log(camera.pixelWidth);
+            Debug.Log(camera.pixelHeight);
+
+            clearPixels = new Color32[camera.pixelWidth * camera.pixelHeight];
+            for (int i = 0; i < clearPixels.Length; i++)
+            {
+                clearPixels[i] = Color.clear;
+            }
+            clearLightTexture.SetPixels32(clearPixels);
+            clearLightTexture.Apply();
+
+            lightTexture.SetPixels32(clearPixels);
+            lightTexture.Apply();
+
+            lightTexture.wrapMode = TextureWrapMode.Clamp;
+        }
+
+        void FixedUpdate()
+        {
+            if (active)
+            {
+                float height = 2f * camera.orthographicSize;
+                float width = height * camera.aspect;
+                Vector3 pos = camera.transform.position;
+
+                lightTexture.SetPixels32(clearPixels);
+                GetLightEdges(new Rect(pos.x - width / 2, pos.y - height / 2, width, height), player.transform.position.x, player.transform.position.y);
+            }
+
+            if (Input.GetKey(KeyCode.L))
+            {
+                active = !active;
+            }
+            
+        }
+
+        void OnGUI()
+        {
+            GUI.DrawTexture(new Rect(0, 0, camera.pixelWidth, camera.pixelHeight), lightTexture);
+        }
 
         private float LightEdgesIntersect(LightEdge a, LightEdge b)
         {
@@ -78,14 +134,14 @@ namespace Assets.Scripts
             return Mathf.Sqrt(dx * dx + dy * dy);
         }
 
-        private void GetLightEdges(Rect bounds, float x, float y)
+        public void GetLightEdges(Rect bounds, float x, float y)
         {
             PriorityQueue<LightEdge> edges = new PriorityQueue<LightEdge>();
 
             float leftX = bounds.x;
             float rightX = bounds.x + bounds.width;
-            float topY = bounds.y;
-            float botY = bounds.y - bounds.height;
+            float botY = bounds.y;
+            float topY = bounds.y + bounds.height;
 
             // create bounding edges
             LightEdge top = new LightEdge(leftX, topY, rightX, topY);
@@ -110,11 +166,11 @@ namespace Assets.Scripts
             edges.Enqueue(right);
 
             // find all edges facing (x, y) in the bounds
-            for (int r = (int)Mathf.Floor(Mathf.Abs(topY) / CELL_SIZE); r < (int)Mathf.Floor(Mathf.Abs(botY) / CELL_SIZE); r++)
+            for (int r = (int)Mathf.Floor(botY / CELL_SIZE); r <= (int)Mathf.Floor(topY / CELL_SIZE); r++)
             {
-                for (int c = (int)Mathf.Floor(leftX / CELL_SIZE); c < (int)Mathf.Floor(rightX / CELL_SIZE); c++)
+                for (int c = (int)Mathf.Floor(leftX / CELL_SIZE); c <= (int)Mathf.Floor(rightX / CELL_SIZE); c++)
                 {
-                    if (r >= 0 && c >= 0 && r < Cave.CAVE_WIDTH && c < Cave.CAVE_HEIGHT)
+                    if (r <= 0 && c >= 0 && r > -Cave.CAVE_WIDTH && c < Cave.CAVE_HEIGHT)
                     {
                         LightEdge e = GetCellEdgeFacingPoint(c, r, x, y);
                         if (e != null)
@@ -125,104 +181,194 @@ namespace Assets.Scripts
                     }
                 }
             }
-
-            // set next and previous edge values
-            foreach(LightEdge a in edges.getData())
+            
+            foreach(LightEdge e in edges.getData())
             {
+                // set next and previous edge values
                 foreach (LightEdge b in edges.getData())
                 {
-                    if (!a.Equals(b))
+                    if (!e.Equals(b))
                     {
-                        if (a.x1 == b.x2 && a.y1 == b.y2)
+                        if (e.x1 == b.x2 && e.y1 == b.y2)
                         {
-                            a.prev = b;
-                            b.next = a;
+                            e.prev = b;
+                            b.next = e;
                         }
-                        else if (a.x2 == b.x1 && a.y2 == b.y1)
+                        else if (e.x2 == b.x1 && e.y2 == b.y1)
                         {
-                            a.next = b;
-                            b.prev = a;
+                            e.next = b;
+                            b.prev = e;
                         }
                     }
                 }
-            }
 
-            // edge projections
-            foreach (LightEdge e in edges.getData())
-            {
+                // set projections
                 if (e.prev == null)
                 {
-                    // TODO
+                    Vector2 dir = new Vector2(e.x1 - x, e.y1 - y);
+                    Vector2 line = dir.normalized * camera.orthographicSize * 2f;
+                    LightEdge proj = new LightEdge(e.x1 + line.x, e.y1 + line.y, e.x1, e.y1);
+                    proj.next = e;
+                    e.prev = proj;
+
+                    DrawLightEdge(proj, Color.red);
+
+                    // TODO: intersection logic
                 }
                 if (e.next == null)
                 {
-                    // TODO
+                    Vector2 dir = new Vector2(e.x2 - x, e.y2 - y);
+                    Vector2 line = dir.normalized * camera.orthographicSize * 2f;
+                    LightEdge proj = new LightEdge(e.x2, e.y2, e.x2 + line.x, e.y2 + line.y);
+                    proj.prev = e;
+                    e.next = proj;
+
+                    DrawLightEdge(proj, Color.red);
+
+                    // TODO: intersection logic
                 }
+
+                DrawLightEdge(e, Color.red);
             }
 
+            DrawLightEdge(edges.Peek(), Color.cyan);
+            
+            lightTexture.Apply();
+        }
 
+        private void DrawLightEdge(LightEdge e, Color col)
+        {
+            // debug light edges
+            Vector3 p0 = camera.WorldToScreenPoint(new Vector3(e.x1, e.y1, 0));
+            Vector3 p1 = camera.WorldToScreenPoint(new Vector3(e.x2, e.y2, 0));
+            DrawLine(lightTexture, (int)p0.x, (int)p0.y, (int)p1.x, (int)p1.y, col);
+            if (e.prev == null)
+            {
+                DrawLine(lightTexture, (int)p0.x - 5, (int)p0.y - 5, (int)p0.x + 5, (int)p0.y + 5, Color.green);
+            }
+            if (e.next == null)
+            {
+                DrawLine(lightTexture, (int)p1.x + 5, (int)p1.y - 5, (int)p1.x - 5, (int)p1.y + 5, new Color(0.5f, 0.2f, 1, 1));
+            }
         }
 
         private LightEdge GetCellEdgeFacingPoint(int c, int r, float x, float y)
         {
-            float top = -r * CELL_SIZE;
-            float bot = -(r + 1) * CELL_SIZE;
+            float top = (r+1) * CELL_SIZE;
+            float bot = r * CELL_SIZE;
             float left = c * CELL_SIZE;
-            float right = (c + 1) * CELL_SIZE;
+            float right = (c+1) * CELL_SIZE;
+            float b = 0;
 
-            switch (Cave.grid[c, r])
+            switch (Cave.grid[c, -r])
             {
                 case Cell.EdgeE:
                     if (x > right)
                     {
-                        return new LightEdge(right, top, right, bot);
+                        return new LightEdge(right, bot, right, top);
                     }
                     break;
                 case Cell.EdgeW:
                     if (x < left)
                     {
-                        return new LightEdge(left, bot, left, top);
+                        return new LightEdge(left, top, left, bot);
                     }
                     break;
                 case Cell.EdgeN:
                     if (y > top)
                     {
-                        return new LightEdge(left, top, right, top);
+                        return new LightEdge(right, top, left, top);
                     }
                     break;
                 case Cell.EdgeS:
                     if (y < bot)
                     {
-                        return new LightEdge(right, bot, left, bot);
+                        return new LightEdge(left, bot, right, bot);
                     }
                     break;
+                
                 case Cell.SlantNE:
-                    if (y < top - left + x)
+                    b = left + top;
+                    if (y > -x + b)
                     {
                         return new LightEdge(right, bot, left, top);
                     }
                     break;
+                
                 case Cell.SlantSW:
-                    if (y > top - left + x) // conditional might be switched with SlantSE...
+                    b = left + top;
+                    if (y < -x + b)
                     {
                         return new LightEdge(left, top, right, bot);
                     }
                     break;
+                
                 case Cell.SlantNW:
-                    if (y < right + top - x)
+                    b = bot - left;
+                    if (y > x + b)
                     {
                         return new LightEdge(right, top, left, bot);
                     }
                     break;
                 case Cell.SlantSE:
-                    if (y > right + top - x)
+                    b = bot - left;
+                    if (y < x + b)
                     {
-                        return new LightEdge(bot, left, top, right);
+                        return new LightEdge(left, bot, right, top);
                     }
                     break;
             }
 
             return null;
         }
+
+        private void DrawLine(Texture2D tex, int x0, int y0, int x1, int y1, Color col)
+        {
+            int dy = (int)(y1 - y0);
+            int dx = (int)(x1 - x0);
+            int stepx, stepy;
+
+            if (dy < 0) { dy = -dy; stepy = -1; }
+            else { stepy = 1; }
+            if (dx < 0) { dx = -dx; stepx = -1; }
+            else { stepx = 1; }
+            dy <<= 1;
+            dx <<= 1;
+
+            float fraction = 0;
+
+            tex.SetPixel(x0, y0, col);
+            if (dx > dy)
+            {
+                fraction = dy - (dx >> 1);
+                while (Mathf.Abs(x0 - x1) > 1)
+                {
+                    if (fraction >= 0)
+                    {
+                        y0 += stepy;
+                        fraction -= dx;
+                    }
+                    x0 += stepx;
+                    fraction += dy;
+                    tex.SetPixel(x0, y0, col);
+                }
+            }
+            else
+            {
+                fraction = dx - (dy >> 1);
+                while (Mathf.Abs(y0 - y1) > 1)
+                {
+                    if (fraction >= 0)
+                    {
+                        x0 += stepx;
+                        fraction -= dy;
+                    }
+                    y0 += stepy;
+                    fraction += dx;
+                    tex.SetPixel(x0, y0, col);
+                }
+            }
+        }
+
     }
 }
