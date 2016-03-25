@@ -219,7 +219,6 @@ namespace Assets.Scripts
                         left.y2 = y2;
                         left.distance = DistancePointToEdge(x, y, left);
                         edges.Enqueue(left);
-                        DrawLightEdge(left, Color.red);
                         left = null;
                     }
                     else if (leftFace == Face.North)
@@ -258,7 +257,6 @@ namespace Assets.Scripts
                         right.y1 = y1;
                         right.distance = DistancePointToEdge(x, y, right);
                         edges.Enqueue(right);
-                        DrawLightEdge(right, Color.red);
                         right = null;
                     }
                     else if (rightFace == Face.North)
@@ -303,7 +301,6 @@ namespace Assets.Scripts
                                 top.x2 = x2;
                                 top.distance = DistancePointToEdge(x, y, top);
                                 edges.Enqueue(top);
-                                DrawLightEdge(top, Color.red);
                                 top = null;
                             }
                             else if (topFace == Face.East)
@@ -342,7 +339,6 @@ namespace Assets.Scripts
                                 bot.x1 = x1;
                                 bot.distance = DistancePointToEdge(x, y, bot);
                                 edges.Enqueue(bot);
-                                DrawLightEdge(bot, Color.red);
                                 bot = null;
                             }
                             else if (botFace == Face.East)
@@ -372,25 +368,21 @@ namespace Assets.Scripts
             {
                 left.distance = DistancePointToEdge(x, y, left);
                 edges.Enqueue(left);
-                DrawLightEdge(left, Color.red);
             }
             if (right != null)
             {
                 right.distance = DistancePointToEdge(x, y, right);
                 edges.Enqueue(right);
-                DrawLightEdge(right, Color.red);
             }
             if (top != null)
             {
                 top.distance = DistancePointToEdge(x, y, top);
                 edges.Enqueue(top);
-                DrawLightEdge(top, Color.red);
             }
             if (bot != null)
             {
                 bot.distance = DistancePointToEdge(x, y, bot);
                 edges.Enqueue(bot);
-                DrawLightEdge(bot, Color.red);
             }
             #endregion
             
@@ -423,14 +415,15 @@ namespace Assets.Scripts
                 if (e.prev == null)
                 {
                     Vector2 dir = new Vector2(e.x1 - x, e.y1 - y);
-                    Vector2 line = dir.normalized * cam.orthographicSize * 2f;
+                    Vector2 line = dir.normalized * cam.orthographicSize * 10f;
                     LightEdge proj = new LightEdge(e.x1 + line.x, e.y1 + line.y, e.x1, e.y1);
                     proj.next = e;
+                    proj.prev = null;
                     e.prev = proj;
 
                     DrawLightEdge(proj, Color.red);
 
-                    // TODO: intersection logic
+                    // intersection logic
                     float pmag = (new Vector2(proj.x2 - proj.x1, proj.y2 - proj.x1)).magnitude;
                     foreach (LightEdge le in edges.getData())
                     {
@@ -451,20 +444,20 @@ namespace Assets.Scripts
                             pmag = mag;
                         }
                     }
+
                     proj.distance = DistancePointToEdge(x, y, proj);
                     pedges.Add(proj);
                 }
                 if (e.next == null)
                 {
                     Vector2 dir = new Vector2(e.x2 - x, e.y2 - y);
-                    Vector2 line = dir.normalized * cam.orthographicSize * 2f;
+                    Vector2 line = dir.normalized * cam.orthographicSize * 10f;
                     LightEdge proj = new LightEdge(e.x2, e.y2, e.x2 + line.x, e.y2 + line.y);
                     proj.prev = e;
+                    proj.next = null;
                     e.next = proj;
 
-                    DrawLightEdge(proj, Color.red);
-
-                    // TODO: intersection logic
+                    // intersection logic
                     float pmag = (new Vector2(proj.x2 - proj.x1, proj.y2 - proj.x1)).magnitude;
                     foreach (LightEdge le in edges.getData())
                     {
@@ -489,35 +482,47 @@ namespace Assets.Scripts
                     proj.distance = DistancePointToEdge(x, y, proj);
                     pedges.Add(proj);
                 }
-
-                DrawLightEdge(e, Color.red);
             }
 
+            // add projections to priority queue
+            foreach (LightEdge e in pedges)
+            {
+                edges.Enqueue(e);
+            }
+
+            /*
+            // debug next and previous edge links
             foreach (LightEdge e in edges.getData())
             {
                 if (e.next != null)
                 {
+                    // NEXT
                     DebugDrawSquare(e.x2, e.y2, 0.1f, Color.cyan);
                 }
                 else
                 {
-                    DebugDrawSquare(e.x2, e.y2, 0.15f, Color.magenta);
+                    DebugDrawSquare(e.x2, e.y2, 0.2f, Color.magenta);
+                    DebugDrawSquare(e.x2, e.y2, 0.25f, Color.magenta);
                 }
+
                 if (e.prev != null)
                 {
+                    // PREV
                     DebugDrawSquare(e.x1, e.y1, 0.05f, Color.green);
                 }
                 else
                 {
-                    DebugDrawSquare(e.x1, e.y1, 0.15f, Color.magenta);
+                    DebugDrawSquare(e.x1, e.y1, 0.2f, Color.magenta);
+                    DebugDrawSquare(e.x1, e.y1, 0.25f, Color.magenta);
                 }
             }
+            */
 
             int i = 0;
             LightEdge light = edges.Peek();
             do
             {
-                //DrawLightEdge(light, Color.green);
+                DrawLightEdge(light, Color.green);
                 light = light.next;
                 i++;
             } while (light != null && !light.Equals(edges.Peek()) && i < edges.getData().Count);
