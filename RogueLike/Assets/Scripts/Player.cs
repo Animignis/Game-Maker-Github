@@ -9,7 +9,6 @@ public class Player : MonoBehaviour {
     private Stats stats;
 
     private const float SHAKE_AMOUNT = 0.1f;
-    private bool shake = false;
     private float shakeTimeStop = 0;
 
     private float accel = 100;
@@ -44,7 +43,7 @@ public class Player : MonoBehaviour {
     {
         if (Input.GetKey(KeyCode.Space))
         {
-            // shakeTimeStop = Time.realtimeSinceStartup + 1.0f;
+            //shakeTimeStop = Time.realtimeSinceStartup + 1.0f;
         }
 
         Move();

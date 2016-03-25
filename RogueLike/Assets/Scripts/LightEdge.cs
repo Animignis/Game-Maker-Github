@@ -41,7 +41,13 @@ namespace Assets.Scripts
         {
             if (this.distance < other.distance) return -1;
             else if (this.distance > other.distance) return 1;
-            else return 0;
+            else { return 0; }
+        }
+
+        public override bool Equals(object obj)
+        {
+            LightEdge other = (LightEdge) obj;
+            return this.x1 == other.x1 && this.x2 == other.x2 && this.y1 == other.y1 && this.y2 == other.y2;
         }
     }
 }

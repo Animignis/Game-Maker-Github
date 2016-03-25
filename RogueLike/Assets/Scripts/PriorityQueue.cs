@@ -22,7 +22,9 @@ namespace Assets.Scripts
             {
                 int pi = (ci - 1) / 2; // parent index
                 if (data[ci].CompareTo(data[pi]) >= 0) break; // child item is larger than (or equal) parent so we're done
-                T tmp = data[ci]; data[ci] = data[pi]; data[pi] = tmp;
+                T tmp = data[ci];
+                data[ci] = data[pi];
+                data[pi] = tmp;
                 ci = pi;
             }
         }
@@ -90,6 +92,10 @@ namespace Assets.Scripts
         public List<T> getData()
         {
             return data;
+        }
+
+        public void setData(List<T> data)
+        {
         }
     }
 }
