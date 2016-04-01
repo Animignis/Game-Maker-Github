@@ -52,7 +52,8 @@ namespace Assets.Scripts
                 Vector3 pos = cam.transform.position;
 
                 lightTexture.SetPixels32(clearPixels);
-                GetLightEdges(new Rect(pos.x - width / 2 + 1, pos.y - height / 2 + 1, width - 2, height - 2), player.transform.position.x, player.transform.position.y);
+                GetLightEdges(new Rect(pos.x - width / 2, pos.y - height / 2, width, height), player.transform.position.x, player.transform.position.y);
+
             }
 
             if (Input.GetKey(KeyCode.L))
@@ -134,35 +135,6 @@ namespace Assets.Scripts
             return Mathf.Sqrt(dx * dx + dy * dy);
         }
 
-
-
-        public Face GetCellDirection(Cell cell, bool vertical)
-        {
-            if (vertical)
-            {
-                if (cell == Cell.EdgeN || cell == Cell.SlantNW || cell == Cell.SlantNE)
-                {
-                    return Face.North;
-                }
-                else if (cell == Cell.EdgeS || cell == Cell.SlantSW || cell == Cell.SlantSE)
-                {
-                    return Face.South;
-                }
-            }
-            else 
-            {
-                if (cell == Cell.EdgeE || cell == Cell.SlantSE || cell == Cell.SlantNE)
-                {
-                    return Face.East;
-                }
-                else if (cell == Cell.EdgeW || cell == Cell.SlantSW || cell == Cell.SlantNW)
-                {
-                    return Face.West;
-                }
-            }
-            return Face.Null;
-        }
-
         public void GetLightEdges(Rect bounds, float x, float y)
         {
             PriorityQueue<LightEdge> edges = new PriorityQueue<LightEdge>();
@@ -171,12 +143,6 @@ namespace Assets.Scripts
             float rightX = Mathf.FloorToInt(bounds.x + bounds.width) + 1;
             float botY = Mathf.FloorToInt(bounds.y);
             float topY = Mathf.FloorToInt(bounds.y + bounds.height) + 1;
-
-            // create bounding edges
-            LightEdge top = new LightEdge(leftX, topY, rightX, topY);
-            LightEdge bot = new LightEdge(rightX, botY, leftX, botY);
-            LightEdge left = new LightEdge(leftX, botY, leftX, topY);
-            LightEdge right = new LightEdge(rightX, topY, rightX, botY);
 
             // find all edges facing (x, y) in the bounds
             int leftCol = Mathf.FloorToInt(leftX / CELL_SIZE);
@@ -194,198 +160,58 @@ namespace Assets.Scripts
             for (int r = botRow; r <= topRow; r++)
             {
                 #region Set Left and Right Boundary Edges
-                Face leftFace = GetCellDirection(Cave.grid[leftCol, -r], true);
-                if (left == null)
+                Cell leftCell = Cave.grid[leftCol, -r];
+                if (leftCell == Cell.Empty || leftCell == Cell.SlantSW || leftCell == Cell.SlantNW)
                 {
-                    if (leftFace == Face.North)
-                    {
-                        float y1 = r + 1;
-                        if (Cave.grid[leftCol, -r] == Cell.SlantNW)
-                        {
-                            y1--;
-                        }
-                        left = new LightEdge(leftCol, y1, leftCol, topY);
-                    }
-                }
-                else
-                {
-                    if (leftFace == Face.South)
-                    {
-                        float y2 = r;
-                        if (Cave.grid[leftCol, -r] == Cell.SlantSW)
-                        {
-                            y2++;
-                        }
-                        left.y2 = y2;
-                        left.distance = DistancePointToEdge(x, y, left);
-                        edges.Enqueue(left);
-                        left = null;
-                    }
-                    else if (leftFace == Face.North)
-                    {
-                        float y1 = r + 1;
-                        if (Cave.grid[leftCol, -r] == Cell.SlantNW)
-                        {
-                            y1--;
-                        }
-                        left.y1 = y1;
-                    }
+                    LightEdge e = new LightEdge(leftCol, r, leftCol, r + 1);
+                    e.distance = DistancePointToEdge(x, y, e);
+                    edges.Enqueue(e);
                 }
 
-                Face rightFace = GetCellDirection(Cave.grid[rightCol, -r], true);
-                if (right == null)
+                Cell rightCell = Cave.grid[rightCol, -r];
+                if (rightCell == Cell.Empty || rightCell == Cell.SlantSE || rightCell == Cell.SlantNE)
                 {
-                    if (rightFace == Face.North)
-                    {
-                        float y2 = r + 1;
-                        if (Cave.grid[rightCol, -r] == Cell.SlantNE)
-                        {
-                            y2--;
-                        }
-                        right = new LightEdge(rightX, topY, rightX, y2);
-                    }
-                }
-                else
-                {
-                    if (rightFace == Face.South)
-                    {
-                        float y1 = r;
-                        if (Cave.grid[rightCol, -r] == Cell.SlantSE)
-                        {
-                            y1++;
-                        }
-                        right.y1 = y1;
-                        right.distance = DistancePointToEdge(x, y, right);
-                        edges.Enqueue(right);
-                        right = null;
-                    }
-                    else if (rightFace == Face.North)
-                    {
-                        float y2 = r + 1;
-                        if (Cave.grid[rightCol, -r] == Cell.SlantNE)
-                        {
-                            y2--;
-                        }
-                        right.y2 = y2;
-                    }
+                    LightEdge e = new LightEdge(rightX, r + 1, rightX, r);
+                    e.distance = DistancePointToEdge(x, y, e);
+                    edges.Enqueue(e);
                 }
                 #endregion
                 
                 for (int c = leftCol; c <= rightCol; c++)
                 {
+                    #region Set Top and Bottom Boundary Edges
                     if (firstIteration)
                     {
-                        #region Set Top and Bottom Boundary Edges
-                        Face topFace = GetCellDirection(Cave.grid[c, -topRow], false);
-                        if (top == null)
+                        
+                        Cell topCell = Cave.grid[c, -topRow];
+                        if (topCell == Cell.Empty || topCell == Cell.SlantNE || topCell == Cell.SlantNW)
                         {
-                            if (topFace == Face.East)
-                            {
-                                float x1 = c + 1;
-                                if (Cave.grid[c, -topRow] == Cell.SlantNE)
-                                {
-                                    x1--;
-                                }
-                                top = new LightEdge(x1, topY, rightX, topY);
-                            }
-                        }
-                        else
-                        {
-                            if (topFace == Face.West)
-                            {
-                                float x2 = c;
-                                if (Cave.grid[c, -topRow] == Cell.SlantNW)
-                                {
-                                    x2++;
-                                }
-                                top.x2 = x2;
-                                top.distance = DistancePointToEdge(x, y, top);
-                                edges.Enqueue(top);
-                                top = null;
-                            }
-                            else if (topFace == Face.East)
-                            {
-                                float x1 = c + 1;
-                                if (Cave.grid[c, -topRow] == Cell.SlantNE)
-                                {
-                                    x1--;
-                                }
-                                top.x1 = x1;
-                            }
+                            LightEdge e = new LightEdge(c, topY, c + 1, topY);
+                            e.distance = DistancePointToEdge(x, y, e);
+                            edges.Enqueue(e);
                         }
 
-                        Face botFace = GetCellDirection(Cave.grid[c, -botRow], false);
-                        if (bot == null)
+                        Cell botCell = Cave.grid[c, -botRow];
+                        if (botCell == Cell.Empty || botCell == Cell.SlantSE || botCell == Cell.SlantSW)
                         {
-                            if (botFace == Face.East)
-                            {
-                                float x2 = c + 1;
-                                if (Cave.grid[c, -botRow] == Cell.SlantSE)
-                                {
-                                    x2--;
-                                }
-                                bot = new LightEdge(rightX, botRow, x2, botRow);
-                            }
+                            LightEdge e = new LightEdge(c + 1, botRow, c, botRow);
+                            e.distance = DistancePointToEdge(x, y, e);
+                            edges.Enqueue(e);
                         }
-                        else
-                        {
-                            if (botFace == Face.West)
-                            {
-                                float x1 = c;
-                                if (Cave.grid[c, -botRow] == Cell.SlantSW)
-                                {
-                                    x1++;
-                                }
-                                bot.x1 = x1;
-                                bot.distance = DistancePointToEdge(x, y, bot);
-                                edges.Enqueue(bot);
-                                bot = null;
-                            }
-                            else if (botFace == Face.East)
-                            {
-                                float x2 = c + 1;
-                                if (Cave.grid[c, -botRow] == Cell.SlantSE)
-                                {
-                                    x2--;
-                                }
-                                bot.x2 = x2;
-                            }
-                        }
-                        #endregion
+
                     }
-                    LightEdge e = GetCellEdgeFacingPoint(c, r, x, y);
-                    if (e != null)
+                    #endregion
+                    
+                    LightEdge ee = GetCellEdgeFacingPoint(c, r, x, y);
+                    if (ee != null)
                     {
-                        e.distance = DistancePointToEdge(x, y, e);
-                        edges.Enqueue(e);
+                        ee.distance = DistancePointToEdge(x, y, ee);
+                        edges.Enqueue(ee);
                     }
                 }
                 firstIteration = false;
             }
 
-            #region Original Boundary Edges
-            if (left != null)
-            {
-                left.distance = DistancePointToEdge(x, y, left);
-                edges.Enqueue(left);
-            }
-            if (right != null)
-            {
-                right.distance = DistancePointToEdge(x, y, right);
-                edges.Enqueue(right);
-            }
-            if (top != null)
-            {
-                top.distance = DistancePointToEdge(x, y, top);
-                edges.Enqueue(top);
-            }
-            if (bot != null)
-            {
-                bot.distance = DistancePointToEdge(x, y, bot);
-                edges.Enqueue(bot);
-            }
-            #endregion
-            
             foreach(LightEdge e in edges.getData())
             {
                 // set next and previous edge values
@@ -420,8 +246,6 @@ namespace Assets.Scripts
                     proj.next = e;
                     proj.prev = null;
                     e.prev = proj;
-
-                    DrawLightEdge(proj, Color.red);
 
                     // intersection logic
                     float pmag = (new Vector2(proj.x2 - proj.x1, proj.y2 - proj.x1)).magnitude;
@@ -490,10 +314,11 @@ namespace Assets.Scripts
                 edges.Enqueue(e);
             }
 
-            /*
+            
             // debug next and previous edge links
             foreach (LightEdge e in edges.getData())
             {
+                //DrawLightEdge(e, Color.red);
                 if (e.next != null)
                 {
                     // NEXT
@@ -516,18 +341,41 @@ namespace Assets.Scripts
                     DebugDrawSquare(e.x1, e.y1, 0.25f, Color.magenta);
                 }
             }
-            */
+
+            Mesh mesh = new Mesh();
+            MeshFilter filter = GetComponent<MeshFilter>();
 
             int i = 0;
             LightEdge light = edges.Peek();
+            List<Vector3> vertices = new List<Vector3>();
+            vertices.Add(new Vector3(x, y, 0));
             do
             {
-                DrawLightEdge(light, Color.green);
+                vertices.Add(new Vector3(light.x1, light.y1, 0));
+                //DrawLightEdge(light, Color.green);
                 light = light.next;
                 i++;
             } while (light != null && !light.Equals(edges.Peek()) && i < edges.getData().Count);
-            
+
+            List<Int32> indices = new List<Int32>();
+            for (int v = 1; v < vertices.Count; v++)
+            {
+                indices.Add(0);
+                indices.Add(v);
+                int vv = v + 1;
+                if (vv >= vertices.Count)
+                {
+                    vv = 1;
+                }
+                indices.Add(vv);
+            }
+
+            mesh.Clear();
+            mesh.SetVertices(vertices);
+            mesh.SetTriangles(indices, 0);
+
             lightTexture.Apply();
+            filter.mesh = mesh;
         }
 
         private void DrawLightEdge(LightEdge e, Color col)
@@ -675,14 +523,4 @@ namespace Assets.Scripts
         }
 
     }
-}
-
-
-public enum Face
-{
-    Null = -1,
-    North = 0,
-    South = 1,
-    East = 2,
-    West = 3
 }

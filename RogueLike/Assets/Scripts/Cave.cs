@@ -171,9 +171,6 @@ public class Cave : MonoBehaviour {
                             spr = slantSW;
                             path.RemoveAt(1);
                             break;
-                        case Cell.EdgeS:
-                            col = new Color(0.8f, 0.8f, 0.8f, 1);
-                            break;
                     }
 
                     Vector2[] arr = new Vector2[path.Count];
